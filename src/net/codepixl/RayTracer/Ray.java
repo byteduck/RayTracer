@@ -84,14 +84,15 @@ public class Ray {
 	private ReadableColor light(Renderable from){
 		Ray r = new Ray(pos, rayTracer.light, scalar, rayTracer);
 		Vector3f normal = from.getNormal(this);
-		Vector3f.add(new Vector3f(normal.x*scalar*10,normal.y*scalar*10,normal.z*scalar*10), r.pos, r.pos);
+		Vector3f.add(new Vector3f(normal.x*0.001f,normal.y*0.001f,normal.z*0.001f), r.pos, r.pos);
 		r.origPos = new Vector3f(r.pos);
 		float dist = Util.distance(r.pos, rayTracer.light);
 		for(Renderable g : rayTracer.renderables)
 			if(g.intersectPoint(r) != null)
 				return Color.BLACK;
-		float diffuse = Util.max(Vector3f.dot(r.dir, normal),0.1f);
-		diffuse = diffuse * (1.0f / (1.0f + (0.25f * dist/10 * dist/10)));
+		float diffuse = Util.max(Vector3f.dot(Vector3f.sub(rayTracer.light, pos, null), normal),0.1f);
+		diffuse = diffuse * (1.0f / (1f + (0.1f * dist * dist)));
+		diffuse = Util.clamp(diffuse,0,1);
 		float lightLevel = diffuse;
 		int iLightLevel = (int)(lightLevel*255);
 		return new Color(iLightLevel,iLightLevel,iLightLevel);
@@ -127,6 +128,14 @@ public class Ray {
 		Vector3f right = new Vector3f(normal.x * dot, normal.y * dot, normal.z * dot);
 		Vector3f dir = new Vector3f(r.dir.x - right.x, r.dir.y - right.y, r.dir.z - right.z);
 		return Ray.fromDir(new Vector3f(r.pos), dir, r.scalar, r.rayTracer);
+	}
+
+	public static Vector3f reflect(Vector3f dir, Vector3f normal){
+		normal.normalise(normal);
+		float dot = Vector3f.dot(dir, normal);
+		dot *= 2f;
+		Vector3f right = new Vector3f(normal.x * dot, normal.y * dot, normal.z * dot);
+		return new Vector3f(dir.x - right.x, dir.y - right.y, dir.z - right.z);
 	}
 
 	public Vector3f get(float distance){

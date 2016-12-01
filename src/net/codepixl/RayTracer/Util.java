@@ -34,7 +34,19 @@ public class Util{
 		return new Color(clamp(a.getRed()+b.getRed(),0,255), clamp(a.getGreen()+b.getGreen(),0,255), clamp(a.getBlue()+b.getBlue(),0,255));
 	}
 
+	public static Vector3f add(Vector3f vec, float add){
+		return new Vector3f(vec.x+add, vec.y+add, vec.z+add);
+	}
+
 	public static int clamp(int i, int min, int max){
+		if(i < min)
+			i = min;
+		if(i > max)
+			i = max;
+		return i;
+	}
+
+	public static float clamp(float i, float min, float max){
 		if(i < min)
 			i = min;
 		if(i > max)
@@ -47,4 +59,8 @@ public class Util{
 		if ((t/=d/2) < 1) return c/2*t*t + b;
 		return -c/2 * ((--t)*(t-2) - 1) + b;
 	}
+
+    public static Vector3f multiply(Vector3f vec, float m){
+		return new Vector3f(vec.x*m, vec.y*m, vec.z*m);
+    }
 }

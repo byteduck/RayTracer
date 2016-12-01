@@ -22,7 +22,7 @@ import java.util.ArrayList;
  */
 public class RayTracer{
 
-	public static int WIDTH = 700, HEIGHT = 700, DEPTH = 3, RWIDTH = 300, RHEIGHT = 300;
+	public static int WIDTH = 1000, HEIGHT = 1000, DEPTH = 3, RWIDTH = 300, RHEIGHT = 300;
 	public static float QUALITY = 100f, RATIO = (float)RWIDTH/(float)RHEIGHT; //QUALITY doesn't have any affect any more
 	public static boolean REPEAT = true; //If REPEAT, then it will render over and over again. If not, it will render once and save it as render.png.
 
@@ -32,11 +32,11 @@ public class RayTracer{
 	Sphere sphere,sphere2,sphere3;
 	public volatile boolean quit = false;
 	public Vector3f light = new Vector3f(0f,6f,5);
-	public Color ambientLight = new Color(20,20,20), skyColor = new Color(20,20,20);
+	public Color ambientLight = new Color(75,75,75), skyColor = new Color(20,20,20);
 	public int time = 0;
 
 	public RayTracer() throws LWJGLException{
-		if(RATIO != 1){
+		if(RATIO != 1) {
 			System.err.println("Render ratio must be 1:1.");
 			System.exit(2);
 		}
@@ -72,8 +72,8 @@ public class RayTracer{
 		this.time+=Time.getDelta()*1000;
 		update();
 		ArrayList<Thread> threads = new ArrayList<Thread>();
-		for(int x = 0; x < RWIDTH; x+=200)
-			for(int y = 0; y < RHEIGHT; y+=200){
+		for(int x = 0; x < RWIDTH; x+=RWIDTH/5+1)
+			for(int y = 0; y < RHEIGHT; y+=RHEIGHT/5+1){
 				Thread t = new Thread(new PixelRunnable(x, y));
 				threads.add(t);
 				t.start();
@@ -127,8 +127,8 @@ public class RayTracer{
 		}
 		@Override
 		public void run(){
-			for(int x = this.x; x < this.x+200; x++)
-				for(int y = this.y; y < this.y+200; y++)
+			for(int x = this.x; x < this.x+RWIDTH/5+1; x++)
+				for(int y = this.y; y < this.y+RHEIGHT/5+1; y++)
 					if(!(x > RWIDTH-1 || x < 0 || y > RHEIGHT-1 || y < 0))
 						putPixel(x,y,getPixel(x,y));
 		}
